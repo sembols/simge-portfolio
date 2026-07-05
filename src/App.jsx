@@ -130,7 +130,8 @@ function FontLoader() {
       .font-display { font-family: \'Comfortaa\', sans-serif; }
       .font-body { font-family: \'Lato\', sans-serif; }
 
-      html { scroll-behavior: smooth; }
+      html { scroll-behavior: smooth; overflow-x: hidden; }
+      body { overflow-x: hidden; max-width: 100vw; }
 
       :root { --pill-scale: 0.72; }
       @media (min-width: 400px) { :root { --pill-scale: 0.82; } }
@@ -192,14 +193,10 @@ function FontLoader() {
         }
       }
       .character-svg {
-        width: 620px;
-        height: 620px;
-      }
-      @media (min-width: 768px) {
-        .character-svg {
-          width: 800px;
-          height: 800px;
-        }
+        display: block;
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
       }
 
       .hero-character-gap {
