@@ -130,8 +130,8 @@ function FontLoader() {
       .font-display { font-family: \'Comfortaa\', sans-serif; }
       .font-body { font-family: \'Lato\', sans-serif; }
 
-      html { scroll-behavior: smooth; overflow-x: hidden; }
-      body { overflow-x: hidden; max-width: 100vw; }
+      html { scroll-behavior: smooth; overflow-x: clip; }
+      body { overflow-x: clip; max-width: 100vw; }
 
       :root { --pill-scale: 0.72; }
       @media (min-width: 400px) { :root { --pill-scale: 0.82; } }
