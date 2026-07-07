@@ -364,10 +364,14 @@ function CharacterModel({ mode }) {
   const wrapRef = useRef(null);
   const [pupilOffset, setPupilOffset] = useState({ x: 0, y: 0 });
   const [headTracking, setHeadTracking] = useState({ x: 0, y: 0, rotate: 0 });
+  const rafId = useRef(null);
+  const lastEvent = useRef(null);
 
   useEffect(() => {
-    function handleMove(e) {
-      if (!wrapRef.current) return;
+    function computeAndApply() {
+      const e = lastEvent.current;
+      rafId.current = null;
+      if (!e || !wrapRef.current) return;
       const rect = wrapRef.current.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
       const cy = rect.top + rect.height * 0.27; // approx head height within the illustration
@@ -398,8 +402,18 @@ function CharacterModel({ mode }) {
       const rot = Math.max(-maxRotate, Math.min(maxRotate, dx / 90));
       setHeadTracking({ x: hx, y: hy, rotate: rot });
     }
+
+    function handleMove(e) {
+      lastEvent.current = e;
+      if (rafId.current == null) {
+        rafId.current = requestAnimationFrame(computeAndApply);
+      }
+    }
     window.addEventListener("mousemove", handleMove);
-    return () => window.removeEventListener("mousemove", handleMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMove);
+      if (rafId.current != null) cancelAnimationFrame(rafId.current);
+    };
   }, []);
 
   const pupilSpring = { type: "spring", stiffness: 140, damping: 14 };
