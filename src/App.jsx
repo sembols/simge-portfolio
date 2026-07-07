@@ -385,11 +385,16 @@ function CharacterModel({ mode }) {
       const py = (dy / dist) * Math.min(maxPupil, (Math.abs(dy) / 120) * maxPupil);
       setPupilOffset({ x: px, y: py });
 
-      // Head: very subtle tilt + shift, head is a heavier element than an eye
-      const maxHeadShift = 10;
+      // Head: very subtle tilt + shift, head is a heavier element than an eye.
+      // Vertical shift is kept much smaller than horizontal — moving the head
+      // group too far up/down separates it from the neck artwork underneath,
+      // creating a visible gap/seam. Horizontal movement doesn't have this
+      // problem, so it can stay more expressive.
+      const maxHeadShiftX = 10;
+      const maxHeadShiftY = 3;
       const maxRotate = 5;
-      const hx = (dx / dist) * Math.min(maxHeadShift, (Math.abs(dx) / 150) * maxHeadShift);
-      const hy = (dy / dist) * Math.min(maxHeadShift, (Math.abs(dy) / 150) * maxHeadShift);
+      const hx = (dx / dist) * Math.min(maxHeadShiftX, (Math.abs(dx) / 150) * maxHeadShiftX);
+      const hy = (dy / dist) * Math.min(maxHeadShiftY, (Math.abs(dy) / 150) * maxHeadShiftY);
       const rot = Math.max(-maxRotate, Math.min(maxRotate, dx / 90));
       setHeadTracking({ x: hx, y: hy, rotate: rot });
     }
@@ -1969,7 +1974,7 @@ function ContactForm() {
 --------------------------------------------- */
 // Replace these with your real profile URLs
 const SOCIAL_LINKS = {
-  pinterest: "https://pin.it/18TCO3eRJ",
+  pinterest: "https://tr.pinterest.com/sembolstudio/_saved/",
   youtube: "https://youtube.com/@sembolstudio?si=T-pRXYGn4SZ2Xv4G",
   linkedin: "https://www.linkedin.com/in/simge-c-profile",
 };
