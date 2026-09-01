@@ -371,14 +371,14 @@ function CharacterModel({ mode }) {
 
   useEffect(() => {
     function computeAndApply() {
-      const e = lastEvent.current;
+      const p = lastEvent.current;
       rafId.current = null;
-      if (!e || !wrapRef.current) return;
+      if (!p || !wrapRef.current) return;
       const rect = wrapRef.current.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
       const cy = rect.top + rect.height * 0.27; // approx head height within the illustration
-      const dx = e.clientX - cx;
-      const dy = e.clientY - cy;
+      const dx = p.x - cx;
+      const dy = p.y - cy;
       const dist = Math.sqrt(dx * dx + dy * dy) || 1;
 
       // Pupils: very small refinement on top of head tracking — the head
@@ -391,29 +391,46 @@ function CharacterModel({ mode }) {
       const py = (dy / dist) * Math.min(maxPupil, (Math.abs(dy) / 120) * maxPupil);
       setPupilOffset({ x: px, y: py });
 
-      // Head: very subtle tilt + shift, head is a heavier element than an eye.
-      // Vertical shift is kept much smaller than horizontal — moving the head
-      // group too far up/down separates it from the neck artwork underneath,
-      // creating a visible gap/seam. Horizontal movement doesn't have this
-      // problem, so it can stay more expressive.
-      const maxHeadShiftX = 10;
-      const maxHeadShiftY = 3;
-      const maxRotate = 5;
+      // Head: tilt + shift. Amplitude is tuned to be proportionally as
+      // noticeable as the pupil movement above (the pupil sits in a very
+      // small feature so a few px reads clearly; the head is much larger,
+      // so it needs a bigger absolute range in this 1080-unit canvas to
+      // read at all, in both work and chill poses and at small mobile
+      // frame sizes). Vertical shift is kept smaller than horizontal —
+      // moving the head group too far up/down separates it from the neck
+      // artwork underneath, creating a visible gap/seam.
+      const maxHeadShiftX = 22;
+      const maxHeadShiftY = 6;
+      const maxRotate = 9;
       const hx = (dx / dist) * Math.min(maxHeadShiftX, (Math.abs(dx) / 150) * maxHeadShiftX);
       const hy = (dy / dist) * Math.min(maxHeadShiftY, (Math.abs(dy) / 150) * maxHeadShiftY);
-      const rot = Math.max(-maxRotate, Math.min(maxRotate, dx / 90));
+      const rot = Math.max(-maxRotate, Math.min(maxRotate, dx / 60));
       setHeadTracking({ x: hx, y: hy, rotate: rot });
     }
 
     function handleMove(e) {
-      lastEvent.current = e;
+      lastEvent.current = { x: e.clientX, y: e.clientY };
       if (rafId.current == null) {
         rafId.current = requestAnimationFrame(computeAndApply);
       }
     }
+
+    function handleTouch(e) {
+      const t = e.touches && e.touches[0];
+      if (!t) return;
+      lastEvent.current = { x: t.clientX, y: t.clientY };
+      if (rafId.current == null) {
+        rafId.current = requestAnimationFrame(computeAndApply);
+      }
+    }
+
     window.addEventListener("mousemove", handleMove);
+    window.addEventListener("touchstart", handleTouch, { passive: true });
+    window.addEventListener("touchmove", handleTouch, { passive: true });
     return () => {
       window.removeEventListener("mousemove", handleMove);
+      window.removeEventListener("touchstart", handleTouch);
+      window.removeEventListener("touchmove", handleTouch);
       if (rafId.current != null) cancelAnimationFrame(rafId.current);
     };
   }, []);
