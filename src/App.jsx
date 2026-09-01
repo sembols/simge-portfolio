@@ -1090,7 +1090,7 @@ function Header() {
             src={HEADER_LOGO_SRC}
             alt="Simge logo"
             className="w-auto"
-            style={{ height: "clamp(28px, 5vw, 31px)" }}
+            style={{ height: "clamp(25px, 5vw, 28px)" }}
           />
         </a>
 
