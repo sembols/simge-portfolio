@@ -389,7 +389,10 @@ function CharacterModel({ mode }) {
       const maxPupil = 3.5;
       const px = (dx / dist) * Math.min(maxPupil, (Math.abs(dx) / 120) * maxPupil);
       const py = (dy / dist) * Math.min(maxPupil, (Math.abs(dy) / 120) * maxPupil);
-      setPupilOffset({ x: px, y: py });
+      setPupilOffset({
+        x: Number.isFinite(px) ? px : 0,
+        y: Number.isFinite(py) ? py : 0,
+      });
 
       // Head: tilt + shift. Amplitude is tuned to be proportionally as
       // noticeable as the pupil movement above (the pupil sits in a very
@@ -399,13 +402,17 @@ function CharacterModel({ mode }) {
       // frame sizes). Vertical shift is kept smaller than horizontal —
       // moving the head group too far up/down separates it from the neck
       // artwork underneath, creating a visible gap/seam.
-      const maxHeadShiftX = 22;
-      const maxHeadShiftY = 6;
-      const maxRotate = 9;
+      const maxHeadShiftX = 10;
+      const maxHeadShiftY = 3;
+      const maxRotate = 5;
       const hx = (dx / dist) * Math.min(maxHeadShiftX, (Math.abs(dx) / 150) * maxHeadShiftX);
       const hy = (dy / dist) * Math.min(maxHeadShiftY, (Math.abs(dy) / 150) * maxHeadShiftY);
-      const rot = Math.max(-maxRotate, Math.min(maxRotate, dx / 60));
-      setHeadTracking({ x: hx, y: hy, rotate: rot });
+      const rot = Math.max(-maxRotate, Math.min(maxRotate, dx / 90));
+      setHeadTracking({
+        x: Number.isFinite(hx) ? hx : 0,
+        y: Number.isFinite(hy) ? hy : 0,
+        rotate: Number.isFinite(rot) ? rot : 0,
+      });
     }
 
     function handleMove(e) {
@@ -651,7 +658,7 @@ function CharacterModel({ mode }) {
       <path className="c_st9" d="M568.95,330.88s-5.69,28.56,1.73,37.33c10.54,12.44,16.28,9.2,16.28,9.2,0,0-4.75,17.18-28.7,17.81-40.55,1.07-43.94-12.67-43.94-12.67,0,0,11.66-1.36,18.11-8.17,11.76-12.42,2.29-37.44,2.29-37.44l16.9.84,17.33-6.9Z"/>
     </g>
   </g>
-  <motion.g id="c__x2B_pupet" animate={headTracking} transition={headSpring} style={{ transformOrigin: "545px 310px" }}>
+  <motion.g id="c__x2B_pupet" initial={false} animate={headTracking} transition={headSpring} style={{ transformOrigin: "545px 310px" }}>
     <g id="c_head">
       <g id="c_Hair">
         <g>
@@ -680,10 +687,10 @@ function CharacterModel({ mode }) {
         <path className="c_st10" d="M543.25,302.25l-1.73,9.43c-.27,1.48-.84,3.22.52,3.87l3.06.77"/>
       </g>
       <g id="c__x2B_Left_eye">
-        <motion.ellipse id="c__x2B_left_eye_papil" className="c_st19" cx={562.67} cy={304.53} rx="4.75" ry="4.75" animate={{ cx: 562.67 + pupilOffset.x, cy: 304.53 + pupilOffset.y }} transition={pupilSpring}/>
+        <motion.ellipse id="c__x2B_left_eye_papil" className="c_st19" cx={562.67} cy={304.53} rx="4.75" ry="4.75" initial={false} animate={{ cx: 562.67 + pupilOffset.x, cy: 304.53 + pupilOffset.y }} transition={pupilSpring}/>
       </g>
       <g id="c__x2B_Right_eye">
-        <motion.ellipse id="c__x2B__Right_eye_papil" className="c_st19" cx={524.81} cy={308.6} rx="4.75" ry="4.75" animate={{ cx: 524.81 + pupilOffset.x, cy: 308.6 + pupilOffset.y }} transition={pupilSpring}/>
+        <motion.ellipse id="c__x2B__Right_eye_papil" className="c_st19" cx={524.81} cy={308.6} rx="4.75" ry="4.75" initial={false} animate={{ cx: 524.81 + pupilOffset.x, cy: 308.6 + pupilOffset.y }} transition={pupilSpring}/>
       </g>
       <g id="c__x2B_Right_eye_brow">
         <path id="c_Right_eye" className="c_st10" d="M516.25,298.4s5.84-7.18,14.18-3.87"/>
@@ -920,7 +927,7 @@ function CharacterModel({ mode }) {
       <path className="w_st15" d="M773.66,603.51l-112.6,20.38c-4.55.82-8.47-3.25-7.48-7.76l21.32-97.09c.58-2.65,2.76-4.66,5.45-5.03l112.25-15.37c4.48-.61,8.2,3.44,7.2,7.86l-20.97,92.07c-.58,2.53-2.61,4.47-5.16,4.94h-.01Z"/>
     </g>
   </g>
-  <motion.g id="w__x2B_pupet" animate={headTracking} transition={headSpring} style={{ transformOrigin: "545px 310px" }}>
+  <motion.g id="w__x2B_pupet" initial={false} animate={headTracking} transition={headSpring} style={{ transformOrigin: "545px 310px" }}>
     <g id="w_head">
       <g id="w_Hair">
         <g>
@@ -949,10 +956,10 @@ function CharacterModel({ mode }) {
         <path className="w_st9" d="M543.25,302.25l-1.73,9.43c-.27,1.48-.84,3.22.52,3.87l3.06.77"/>
       </g>
       <g id="w__x2B_Left_eye">
-        <motion.ellipse id="w__x2B_left_eye_papil" className="w_st26" cx={562.66} cy={304.53} rx="4.75" ry="4.75" animate={{ cx: 562.66 + pupilOffset.x, cy: 304.53 + pupilOffset.y }} transition={pupilSpring}/>
+        <motion.ellipse id="w__x2B_left_eye_papil" className="w_st26" cx={562.66} cy={304.53} rx="4.75" ry="4.75" initial={false} animate={{ cx: 562.66 + pupilOffset.x, cy: 304.53 + pupilOffset.y }} transition={pupilSpring}/>
       </g>
       <g id="w__x2B_Right_eye">
-        <motion.ellipse id="w__x2B__Right_eye_papil" className="w_st26" cx={524.82} cy={308.58} rx="4.75" ry="4.75" animate={{ cx: 524.82 + pupilOffset.x, cy: 308.58 + pupilOffset.y }} transition={pupilSpring}/>
+        <motion.ellipse id="w__x2B__Right_eye_papil" className="w_st26" cx={524.82} cy={308.58} rx="4.75" ry="4.75" initial={false} animate={{ cx: 524.82 + pupilOffset.x, cy: 308.58 + pupilOffset.y }} transition={pupilSpring}/>
       </g>
       <g id="w__x2B_Right_eye_brow">
         <path id="w_Right_eye" className="w_st9" d="M516.25,298.4s5.84-7.18,14.18-3.87"/>
