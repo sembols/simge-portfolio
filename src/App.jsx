@@ -40,13 +40,22 @@ const OG_IMAGE_B64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABLAAAAJ2CAIA
 --------------------------------------------- */
 function MetaTags() {
   useEffect(() => {
-    // OG image for link previews (social media, iMessage, Slack etc.)
+    // Document title — must include the brand name so Google can match
+    // brand-name searches (e.g. "sembol studio") to this page.
+    document.title = "Sembol Studio | Simge — Creative Visual Designer & Motion Specialist";
+
+    // Standard + OG/Twitter meta for search engines and link previews
+    // (social media, iMessage, Slack etc.)
     const metas = [
-      { property: "og:title", content: "Simge — Motion Designer & Creative Visual Designer" },
-      { property: "og:description", content: "Bringing stories to life through purposeful design and motion." },
+      { name: "description", content: "Sembol Studio is the creative practice of Simge, a visual designer and motion specialist bringing stories to life through purposeful design and motion." },
+      { property: "og:site_name", content: "Sembol Studio" },
+      { property: "og:title", content: "Sembol Studio | Simge — Motion Designer & Creative Visual Designer" },
+      { property: "og:description", content: "Sembol Studio — bringing stories to life through purposeful design and motion." },
       { property: "og:image", content: OG_IMAGE_B64 },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://sembolstudio.com/" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Sembol Studio | Simge — Motion Designer & Creative Visual Designer" },
       { name: "twitter:image", content: OG_IMAGE_B64 },
     ];
     metas.forEach(({ property, name, content }) => {
@@ -56,6 +65,31 @@ function MetaTags() {
       el.setAttribute("content", content);
       document.head.appendChild(el);
     });
+
+    // Canonical link — tells Google the definitive URL for this page
+    const canonical = document.createElement("link");
+    canonical.setAttribute("rel", "canonical");
+    canonical.setAttribute("href", "https://sembolstudio.com/");
+    document.head.appendChild(canonical);
+
+    // Structured data (schema.org) — helps Google associate the brand
+    // name "Sembol Studio" with this site and can power a knowledge panel.
+    const ldJson = document.createElement("script");
+    ldJson.type = "application/ld+json";
+    ldJson.text = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "Sembol Studio",
+      alternateName: "Simge",
+      url: "https://sembolstudio.com/",
+      description: "Creative visual design and motion studio bringing stories to life through purposeful design and motion.",
+      sameAs: [
+        SOCIAL_LINKS.pinterest,
+        SOCIAL_LINKS.youtube,
+        SOCIAL_LINKS.linkedin,
+      ].filter(Boolean),
+    });
+    document.head.appendChild(ldJson);
   }, []);
   return null;
 }
@@ -1032,7 +1066,7 @@ function SwitchButton({ mode, onToggle }) {
             <motion.span
               key="work-label"
               className="absolute font-display font-bold text-xl leading-none flex items-center"
-              style={{ color: COLORS.ink, left: `${edgePad + 8}px`, top: 0, bottom: 0 }}
+              style={{ color: COLORS.ink, left: `${edgePad + 8}px`, top: 0, bottom: 0, lineHeight: 1, transform: "translateY(4px)" }}
               initial={{ opacity: 0, x: -6 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -6 }}
@@ -1044,7 +1078,7 @@ function SwitchButton({ mode, onToggle }) {
             <motion.span
               key="chill-label"
               className="absolute font-display font-bold text-xl leading-none flex items-center"
-              style={{ color: COLORS.ink, right: `${edgePad + 8}px`, top: 0, bottom: 0 }}
+              style={{ color: COLORS.ink, right: `${edgePad + 8}px`, top: 0, bottom: 0, lineHeight: 1, transform: "translateY(4px)" }}
               initial={{ opacity: 0, x: 6 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 6 }}
@@ -1112,7 +1146,7 @@ function Header() {
         >
           <img
             src={HEADER_LOGO_SRC}
-            alt="Simge logo"
+            alt="Sembol Studio logo"
             className="w-auto"
             style={{ height: "clamp(25px, 5vw, 28px)" }}
           />
@@ -2124,7 +2158,7 @@ function Footer() {
         >
           <img
             src={LOGO_SRC}
-            alt="Simge logo"
+            alt="Sembol Studio logo"
             className="w-auto"
             style={{ height: "48px", width: "auto", maxHeight: "48px" }}
           />
