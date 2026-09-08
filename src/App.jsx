@@ -84,6 +84,8 @@ function MetaTags() {
       url: "https://sembolstudio.com/",
       description: "Creative visual design and motion studio bringing stories to life through purposeful design and motion.",
       sameAs: [
+        SOCIAL_LINKS.instagram,
+        SOCIAL_LINKS.threads,
         SOCIAL_LINKS.pinterest,
         SOCIAL_LINKS.youtube,
         SOCIAL_LINKS.linkedin,
@@ -2085,6 +2087,8 @@ function ContactForm() {
 --------------------------------------------- */
 // Replace these with your real profile URLs
 const SOCIAL_LINKS = {
+  instagram: "https://www.instagram.com/sembolstudio/",
+  threads: "https://www.threads.com/@sembolstudio",
   pinterest: "https://tr.pinterest.com/sembolstudio/_saved/",
   youtube: "https://youtube.com/@sembolstudio?si=T-pRXYGn4SZ2Xv4G",
   linkedin: "https://www.linkedin.com/in/simge-c-profile",
