@@ -357,6 +357,18 @@ function FontLoader() {
         }
       }
 
+      /* "My creative works" has a wider (so taller) underline doodle than the
+         other headings — extra bottom margin keeps the same breathing room
+         between the doodle and the showreel as the other section headings. */
+      .portfolio-heading {
+        margin-bottom: 80px;
+      }
+      @media (min-width: 768px) {
+        .portfolio-heading {
+          margin-bottom: 94px;
+        }
+      }
+
       /* "Tools I work with" sits exactly midway between the service
          cards above and "About me" below. */
       .tools-marquee-gap {
@@ -1353,7 +1365,7 @@ const THUMB_3D_GUGGLE_CO = "data:image/jpeg;base64,/9j/4gxYSUNDX1BST0ZJTEUAAQEAA
    PORTFOLIO
 --------------------------------------------- */
 const WORKS = [
-  { title: "Social Media Design @@& Motion Graphics", tag: "SOCIAL MEDIA", ratio: "16/9", videoUrl: "https://sembolstudio.com/social_media_design.mp4", poster: THUMB_SOCIAL_MEDIA_DESIGN },
+  { title: "Social Media Design @@& Motion Graphics", tag: "SOCIAL MEDIA", ratio: "4/5", videoUrl: "https://sembolstudio.com/social_media_design.mp4", poster: THUMB_SOCIAL_MEDIA_DESIGN },
   { title: "Maximal Typography @@& Kinetic Collage", tag: "Typography", ratio: "16/9", videoUrl: "https://sembolstudio.com/typography.mp4", poster: THUMB_TYPOGRAPHY1 },
   { title: "2D Explainer – Inflation", tag: "Explainer", ratio: "16/9", videoUrl: "https://sembolstudio.com/expliner_in.mp4", poster: THUMB_EXPLINER_IN },
   { title: "Medical Explainer – @@Liposuction Procedure", tag: "Explainer", ratio: "16/9", videoUrl: "https://sembolstudio.com/liposuction_explainer_fr.mp4", poster: THUMB_LIPOSUCTION_EXPLAINER_FR },
@@ -1384,6 +1396,20 @@ function ratioStyle(ratio) {
       return { aspectRatio: "1 / 1" };
     default:
       return { aspectRatio: "16 / 9" };
+  }
+}
+
+/* Portrait videos (4:5, 9:16) would be taller than the screen inside a
+   512px-wide modal — narrow the modal so the whole video (plus the title
+   area) fits in the viewport. Landscape/square keep the default width. */
+function modalWidthStyle(ratio) {
+  switch (ratio) {
+    case "9/16":
+      return { maxWidth: "min(32rem, calc((100vh - 260px) * 9 / 16))" };
+    case "4/5":
+      return { maxWidth: "min(32rem, calc((100vh - 260px) * 4 / 5))" };
+    default:
+      return {};
   }
 }
 
@@ -1532,13 +1558,13 @@ function PortfolioModal({ work, onClose }) {
           transition={{ duration: 0.25, ease: "easeOut" }}
           onClick={(e) => e.stopPropagation()}
           className="rounded-3xl max-w-lg w-full overflow-hidden"
-          style={{ backgroundColor: COLORS.bg }}
+          style={{ backgroundColor: COLORS.bg, ...modalWidthStyle(work.ratio) }}
         >
           <div
             className="w-full flex items-center justify-center relative"
             style={{ backgroundColor: "#101010", ...ratioStyle(work.ratio) }}
           >
-            <video className="w-full h-full object-cover" controls playsInline autoPlay poster={work.poster}>
+            <video className="w-full h-full object-contain" controls playsInline autoPlay poster={work.poster}>
               {work.videoUrl && <source src={work.videoUrl} type="video/mp4" />}
             </video>
             <span
@@ -1585,7 +1611,7 @@ function Portfolio() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="font-display font-bold text-3xl md:text-4xl text-center mb-14 md:mb-16 relative inline-block"
+          className="portfolio-heading font-display font-bold text-3xl md:text-4xl text-center relative inline-block"
           style={{ color: COLORS.ink, display: "block" }}
         >
           <span className="relative inline-block">
