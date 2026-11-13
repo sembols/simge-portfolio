@@ -76,6 +76,8 @@ function MetaTags() {
     metas.forEach(({ property, name, content }) => {
       const sel = property ? `meta[property="${property}"]` : `meta[name="${name}"]`;
       let el = document.head.querySelector(sel);
+      // keep the real og-image.png URL from index.html (don't swap in base64)
+      if (el && /image$/.test(property || name || "")) return;
       if (!el) {
         el = document.createElement("meta");
         if (property) el.setAttribute("property", property);
@@ -95,10 +97,13 @@ function MetaTags() {
 
     // Structured data (schema.org) — tells Google and AI assistants WHO this
     // is and WHAT she does, in English and Turkish.
-    const ldJson = document.createElement("script");
-    ldJson.type = "application/ld+json";
-    ldJson.text = JSON.stringify(SEO_STRUCTURED_DATA);
-    document.head.appendChild(ldJson);
+    // index.html already ships the same data statically — only add it if missing
+    if (!document.head.querySelector('script[type="application/ld+json"]')) {
+      const ldJson = document.createElement("script");
+      ldJson.type = "application/ld+json";
+      ldJson.text = JSON.stringify(SEO_STRUCTURED_DATA);
+      document.head.appendChild(ldJson);
+    }
   }, []);
   return null;
 }
